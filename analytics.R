@@ -65,3 +65,4 @@ write.table(j, file='matrixLLR50Genome.csv', sep=',', quote = F, row.names=TRUE)
 
 
 rb = readBlastProt('blastlrrprot3.out');
+write.table(rb,file='blasprothits.csv', sep=',', quote = F)

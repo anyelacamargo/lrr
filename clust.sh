@@ -33,7 +33,7 @@ createFamilies()
 
 pullGenome()
 {
-	cd genomes
+	cd genome_cds
  	#genomes={"ABR2","ABR3","ABR4"}
 #"ABR5","ABR6_r","ABR7","ABR8","ABR9_r","Adi-2","Adi-10","Adi-12","Arn1","Bd1-1","Bd2-3","Bd3-1_r",
 #"Bd18-1","Bd21-3_r","Bd21Control","Bd21Ref","Bd29-1","Bd30-1","BdTR1i","BdTR2B","BdTR2G","BdTR3C","BdTR5I","BdTR7a","BdTR8i","BdTR9K","BdTR10C","BdTR11A","BdTR11G",
@@ -43,7 +43,7 @@ pullGenome()
 #"${genomes[@]}"
         do
                 echo $i
-                file_name=`printf 'Bdistachyonv1.%s.1.primaryTrs.fa' ${i}`
+                file_name=`printf 'Bdistachyonv1.%s.1.primaryTrs.cds.fa' ${i}`
 		#Bdistachyonv1.$i.1.primaryTrs.fa
                 #echo $file_name
                 #grep ${i} map.wheat.txt > $file_name
@@ -53,6 +53,41 @@ pullGenome()
 	 	wget --user distachyon --password genome50 wget http://portal.nersc.gov/dna/plant/B_distachyon/distachyon_50/genomes/$i/DATA/$file_name
         done
 }
+
+pullGenomeV2()
+{
+        cd genome_cds
+                file_name='Bdistachyonv2.0.Bd21Ref.1.primaryTrs.cds.fa'
+                #Bdistachyonv1.$i.1.primaryTrs.fa
+                #echo $file_name
+                #grep ${i} map.wheat.txt > $file_name
+                #echo -e "marker\tchromosome\tbp" | cat - $file_name > table_with_header
+                #cp table_with_header $file_name
+                echo $file_name
+                wget --user distachyon --password genome50 wget http://portal.nersc.gov/dna/plant/B_distachyon/distachyon_50/genomes/Bd21Ref/DATA/$file_name
+}
+
+runMugsy()
+{
+        cd /home/avc/devel/mugsy_x86-64-v1r2.3
+        export MUGSY_INSTALL=$HOME/devel/mugsy_x86-64-v1r2.3
+	list_file_name=""
+        for i in ABR2 ABR3 ABR4 ABR5 ABR6_r ABR7 ABR8 ABR9_r Adi-2 Adi-10 Adi-12 Arn1 Bd1-1 Bd2-3 Bd3-1_r Bd18-1 Bd21-3_r Bd21Control Bd29-1 Bd30-1 BdTR1i BdTR2B BdTR2G BdTR3C BdTR5I BdTR7a BdTR8i BdTR10C BdTR11A BdTR11G BdTR11I BdTR12c BdTR13C BdTR13a Bis-1 Foz1 Gaz-8 Jer1 Kah-1 Kah-5 Koz-1 Koz-3 Luc1 Mig3 Mon3 Mur1 Per1 RON2 S8iiC Sig2 Tek-2 Tek-4
+        do
+                file_name=`printf 'Bdistachyonv1.%s.1.primaryTrs.cds.fa' ${i}`
+		newname=`printf 'Bdistachyonv1%s1primaryTrscds.fa' ${i}`
+		cp $file_name $newname
+                list_file_name=`printf '%s %s ' ${list_file_name} ${newname} `
+        done
+        file_name_ref='Bdistachyonv2.0.Bd21Ref.1.primaryTrs.cds.fa'
+        newname='Bdistachyonv2Bd21Ref1primaryTrscds.fa'
+	cp $file_name_ref $newname
+        list_file_name=`printf '%s %s ' ${list_file_name} ${newname} `
+        echo $list_file_name
+	./mugsy --directory /home/avc/devel/ --prefix brachy  $list_file_name
+}
+
+
 
 createDBSwiss()
 {
@@ -73,4 +108,6 @@ blastSwiss()
 #runUsearch
 #pullGenome
 #createDBSwiss
-blastSwiss
+#blastSwiss
+#pullGenomeV2
+runMugsy
